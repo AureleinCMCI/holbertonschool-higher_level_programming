@@ -5,6 +5,13 @@ def read_file(filename=""):
     
     Args:
         filename (str): The name of the file to read. Default is an empty string.
+    
+    Examples:
+        >>> with open("test_file.txt", "w", encoding="utf-8") as f:
+        ...     _ = f.write("Hello, world!\n")
+        >>> read_file("test_file.txt")
+        Hello, world!
     """
     with open(filename, encoding='utf-8') as f:
-        print(f.read(), end='')
+        for line in f:
+            print(line, end='')
