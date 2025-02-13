@@ -9,6 +9,7 @@ import json
 
 
 def convert_csv_to_json(csv_filename):
+
     """Converts a CSV file to a JSON file (data.json).
 
     Args:
@@ -17,6 +18,8 @@ def convert_csv_to_json(csv_filename):
     Returns:
         bool: True if conversion was successful, False otherwise.
     """
+
+
     try:
 
         with open(csv_filename, mode="r", encoding="utf-8") as csv_file:
