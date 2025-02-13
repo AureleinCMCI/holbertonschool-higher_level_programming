@@ -1,12 +1,13 @@
 #!/usr/bin/python3
-"""Basic serialization module to save and load Python dictionaries as JSON."""
-
-import json
 import pickle
+'''
+custom class
+'''
 
 
 class CustomObject:
-    def __init__(self, name, age, is_student=True):
+    """init class"""
+    def __init__(self, name, age, is_student):
         self.name = name
         self.age = age
         self.is_student = is_student
@@ -18,12 +19,19 @@ class CustomObject:
         print(f"Is Student: {self.is_student}")
 
     def serialize(self, filename):
-        """Sérialise l'instance courante et la sauvegarde dans un fichier."""
-        with open(filename, "wb") as file:
-            pickle.dump(self, file)
+        """Serialize the object and save to a file."""
+        try:
+            with open(filename, 'wb') as file:
+                pickle.dump(self, file)
+        except Exception as e:
+            print(f"Serialization error: {e}")
 
     @classmethod
     def deserialize(cls, filename):
-        """Charge une instance sérialisée depuis un fichier et la renvoie."""
-        with open(filename, "rb") as file:
-            return pickle.load(file)
+        """Deserialize the object from a file."""
+        try:
+            with open(filename, 'rb') as file:
+                return pickle.load(file)
+        except Exception as e:
+            print(f"Deserialization error: {e}")
+            return None
