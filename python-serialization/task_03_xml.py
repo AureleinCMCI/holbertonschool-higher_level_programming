@@ -1,54 +1,39 @@
 #!/usr/bin/python3
-"""
-Module to convert CSV data to JSON format using serialization.
-"""
-
 import xml.etree.ElementTree as ET
 
-import xml.etree.ElementTree as ET
 
-def serialize_to_xml(dictionary: dict, filename: str) -> None:
+def serialize_to_xml(dictionary, filename):
     """
-    Sérialise un dictionnaire en XML et l'écrit dans un fichier.
+    Serialize a Python dictionary to an XML file.
 
-    Args:
-        dictionary (dict): Le dictionnaire à sérialiser.
-        filename (str): Le nom du fichier où écrire le XML.
-
-    Returns:
-        None
+    Parameters:
+    dictionary (dict): The dictionary to serialize.
+    filename (str): The name of the output XML file.
     """
     root = ET.Element("data")
+
     for key, value in dictionary.items():
         child = ET.SubElement(root, key)
         child.text = str(value)
+
     tree = ET.ElementTree(root)
-    tree.write(filename, encoding="utf-8", xml_declaration=True)
+    tree.write(filename)
 
-def deserialize_from_xml(filename: str) -> dict:
+
+def deserialize_from_xml(filename):
     """
-    Désérialise un fichier XML en dictionnaire.
+    Deserialize an XML file into a Python dictionary.
 
-    Args:
-        filename (str): Le nom du fichier XML à lire.
+    Parameters:
+    filename (str): The name of the XML file.
 
     Returns:
-        dict: Le dictionnaire reconstruit à partir du XML.
+    dict: The deserialized dictionary.
     """
-    tree = ET.parse(filename)
-    root = tree.getroot()
-    data = {}
-    for element in root:
-        key = element.tag
-        value = element.text
-        try:
-            value = int(value)
-        except ValueError:
-            try:
-                value = float(value)
-            except ValueError:
-                pass
-        data[key] = value
-    return data
+    try:
+        tree = ET.parse(filename)
+        root = tree.getroot()
 
-
+        return {child.tag: child.text for child in root}
+    except (FileNotFoundError, ET.ParseError):
+        return None
