@@ -1,7 +1,12 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
+"""
+Holberton School - Python API Exercise
 
+This script uses the requests library to fetch posts from the JSONPlaceholder API.
+It prints the titles of all posts and also saves them into a CSV file.
+"""
 class MyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         print("Got GET request %s" % (self.path))
