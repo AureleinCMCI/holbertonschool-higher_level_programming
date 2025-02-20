@@ -1,48 +1,50 @@
-"""
-Holberton School - Python API Exercise
+#!/usr/bin/python3
+'''
+This module contains a simple HTTP server for GET requests
+'''
+import http.server
+import json
 
-This script uses the requests library to fetch posts from the JSONPlaceholder API.
-It prints the titles of all posts and also saves them into a CSV file.
-"""
 
-import requests
-import csv
+class SimpleHandler(http.server.BaseHTTPRequestHandler):
+    """Handles HTTP GET requests"""
+    def do_GET(self):
+        if self.path == "/":
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"Hello, this is a simple API!")
 
-# Fonction pour récupérer et afficher les posts
-def fetch_and_print_posts():
-    response = requests.get('https://jsonplaceholder.typicode.com/posts')
-    print("Status Code:", response.status_code)
-    
-    if response.status_code == 200:
-        data = response.json()
-        for post in data:
-            print(post['title'])
-    else:
-        print("Request failed!")
+        elif self.path == "/data":
+            response_data = {"name": "John", "age": 30, "city": "New York"}
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(response_data).encode("utf-8"))
 
-# Fonction pour récupérer, structurer et sauvegarder les posts dans un CSV
-def fetch_and_save_posts():
-    response = requests.get('https://jsonplaceholder.typicode.com/posts')
-    
-    if response.status_code == 200:
-        data = response.json()
-        
-        structured_data = []
-        for post in data:
-            structured_data.append({
-                "id": post['id'],
-                "title": post['title'],
-                "body": post['body']
-            })
-        
-        # Écrire les données dans un fichier CSV
-        with open('posts.csv', 'w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['id', 'title', 'body']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            
-            writer.writeheader()  # Écrire l'en-tête
-            writer.writerows(structured_data)  # Écrire les données
-        
-        print("Posts saved to posts.csv successfully!")
-    else:
-        print("Request failed!")
+        elif self.path == "/status":
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"OK")
+
+        elif self.path == "/info":
+            response_info = {
+                            "version": "1.0",
+                            "description":
+                            "A simple API built with http.server"}
+            self.send_response(200)
+            self.send_header("Content-type", "application.json")
+            self.end_headers()
+            self.wfile.write(json.dumps(response_info).encode("utf-8"))
+
+        else:
+            self.send_response(404)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"Endpoint not found")
+
+
+httpd = http.server.HTTPServer(('localhost', 8000), SimpleHandler)
+print("Server running")
+httpd.serve_forever()
