@@ -1,49 +1,55 @@
+#!/usr/bin/python3
+
 from flask import Flask, jsonify, request
-'''
-This module contains a simple HTTP server for GET requests
-'''
+
 app = Flask(__name__)
 
-# Dictionnaire stockant les utilisateurs en mémoire
-users = {"jane": {"name": "Jane", "age": 28, "city": "Los Angeles"}}
+# Dictionnaire contenant les utilisateurs (initialement vide)
+users = {}
 
+# Messages d'erreur constants
+ERROR_USER_NOT_FOUND = {"error": "User not found"}
+ERROR_USERNAME_REQUIRED = {"error": "Username is required"}
+
+# Route de l'accueil
 @app.route("/")
 def home():
     return "Welcome to the Flask API!"
 
-@app.route('/data')
-def get_users():
-    # Retourne la liste des utilisateurs sous format JSON
-    return jsonify(list(users.keys()))  # Returning just the list of usernames
-
-@app.route('/status')
+# Route de statut
+@app.route("/status")
 def status():
-    return jsonify({"status": "OK"})
+    return "OK"
 
-@app.route('/users/<username>')
+# Route pour obtenir tous les noms d'utilisateurs
+@app.route("/data")
+def get_usernames():
+    return jsonify(list(users.keys()))
+
+# Route pour obtenir les détails d'un utilisateur spécifique
+@app.route("/users/<username>")
 def get_user(username):
-    user = users.get(username)  # Vérifie si l'utilisateur existe dans le dictionnaire
+    user = users.get(username)
     if user:
-        return jsonify(user)  # Renvoie les informations de l'utilisateur sous forme de JSON
-    else:
-        return jsonify({"error": "User not found"}), 404  # Renvoie une erreur si l'utilisateur n'existe pas
+        return jsonify(user)
+    return jsonify(ERROR_USER_NOT_FOUND), 404
 
-@app.route('/add_user', methods=['POST'])
+# Route pour ajouter un nouvel utilisateur
+@app.route("/add_user", methods=["POST"])
 def add_user():
-    data = request.get_json()  # Parse incoming JSON data
-
+    data = request.get_json()
     username = data.get("username")
-    if not username or username in users:
-        return jsonify({"error": "Invalid or duplicate username"}), 400
 
-    users[username] = {
-        "name": data.get("name"),
-        "age": data.get("age"),
-        "city": data.get("city")
-    }
+    if not username:
+        return jsonify(ERROR_USERNAME_REQUIRED), 400
 
-    return jsonify({"message": "User added successfully", "user": users[username]}), 201
+    # Vider la liste des utilisateurs existants
+    users.clear()
 
-# Démarrer le serveur Flask sur le port 5000
+    # Ajouter le nouvel utilisateur
+    users[username] = data
+    return jsonify({"message": "User added", "user": data}), 201
+
+# Lancement de l'application Flask
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True)
