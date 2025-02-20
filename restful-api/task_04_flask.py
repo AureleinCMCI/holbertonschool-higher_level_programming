@@ -34,11 +34,19 @@ def get_user(username):
         return jsonify(user)
     return jsonify(ERROR_USER_NOT_FOUND), 404
 
-# Route pour ajouter un nouvel utilisateur
+# Route pour ajouter un nouvel utilisateur a la base de donné 
 @app.route("/add_user", methods=["POST"])
+
+
 def add_user():
     data = request.get_json()
-    username = data.get("username")
+    """recupére les donnés envoyé ! ( si formulaire 
+      j'entre dans le champs 'users' Aurélien , 
+      cette ligne va récupérer aurelien )
+      """
+    username = data.get("username")"""récupère les données JSON
+    envoyé dans le corp ( petaitre via formulaire)
+    """
 
     if not username:
         return jsonify(ERROR_USERNAME_REQUIRED), 400
@@ -46,7 +54,7 @@ def add_user():
     # Vider la liste des utilisateurs existants
     users.clear()
 
-    # Ajouter le nouvel utilisateur
+    # vérifié si  Ajouter le nouvel utilisateur
     users[username] = data
     return jsonify({"message": "User added", "user": data}), 201
 
