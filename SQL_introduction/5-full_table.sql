@@ -1,4 +1,3 @@
--- Lists all databases of MySQL server
-SELECT COLUMN_NAME, COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT, COLUMN_KEY
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'first_table';
+-- 0x0D. SQL - Introduction, task 5. Full description
+-- Shows full description of `first_table`, DB passed as script arg.
+SHOW CREATE TABLE first_table;
