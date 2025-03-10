@@ -1,26 +1,29 @@
 #!/usr/bin/python3
+'''
+This module  lists all states starting with N from the database hbtn_0e_0_usa
+'''
 import MySQLdb
 import sys
 
 if __name__ == "__main__":
-    # Get arguments
-    username, password, db_name = sys.argv[1], sys.argv[2], sys.argv[3]
 
-    # Connect to MySQL database
-    db = MySQLdb.connect(host="localhost", user=username, passwd=password, db=db_name, port=3306)
+    if len(sys.argv) != 4:
+        exit(1)
 
-    # Create cursor
-    cur = db.cursor()
+    username = sys.argv[1]
+    password = sys.argv[2]
+    database = sys.argv[3]
 
-    # Execute SQL query to fetch states starting with 'N'
-    query = "SELECT * FROM states WHERE name LIKE BINARY 'N%' ORDER BY id ASC;"
-    cur.execute(query)
+    db = MySQLdb.connect(host="localhost", port=3306,
+                         user=username, passwd=password, db=database)
+    cursor = db.cursor()
+    cursor.execute("SELECT DISTINCT * FROM states "
+                   "WHERE name LIKE 'N%' "
+                   "ORDER BY id ASC")
+    states = cursor.fetchall()
 
-    # Fetch and display results
-    results = cur.fetchall()
-    for row in results:
-        print(row)
+    for state in states:
+        print(state)
 
-    # Clean up
-    cur.close()
+    cursor.close()
     db.close()
