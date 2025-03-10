@@ -13,7 +13,7 @@ if __name__ == "__main__":
     database = sys.argv[3]
 
     # Connexion à la base de données
-    db = MySQLdb.connect(host="localhost", port=3306, user=username, passwd='caraboumga', db=database)
+    db = MySQLdb.connect(host="localhost", port=3306, user=username, passwd=password, db=database)
 
     # Création d'un curseur pour exécuter des requêtes SQL
     cur = db.cursor()
